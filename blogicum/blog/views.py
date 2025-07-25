@@ -55,7 +55,11 @@ def post_edit(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if request.user != post.author:
         return redirect('blog:post_detail', post_id=post_id)
-    form = PostForm(request.POST or None, files=request.FILES or None, instance=post)
+    form = PostForm(
+        request.POST or None,
+        files=request.FILES or None,
+        instance=post
+    )
     if form.is_valid():
         form.save()
         return redirect('blog:post_detail', post_id=post_id)
@@ -70,11 +74,19 @@ def post_delete(request, post_id):
     if request.method == 'POST':
         post.delete()
         return redirect('blog:profile', username=request.user.username)
-    return render(request, 'blog/create.html', {'form': PostForm(instance=post)})
+    return render(
+        request,
+        'blog/create.html',
+        {'form': PostForm(instance=post)}
+    )
 
 
 def category_posts(request, category_slug):
-    category = get_object_or_404(Category, slug=category_slug, is_published=True)
+    category = get_object_or_404(
+        Category,
+        slug=category_slug,
+        is_published=True
+    )
     posts = Post.objects.filter(
         category=category,
         is_published=True,
@@ -91,7 +103,8 @@ def category_posts(request, category_slug):
 
 def profile(request, username):
     profile = get_object_or_404(User, username=username)
-    posts = Post.objects.filter(author=profile)
+    posts = Post.objects.filter(author=profile) \
+                        .order_by('-pub_date')
     if request.user != profile:
         posts = posts.filter(
             is_published=True,
@@ -130,7 +143,10 @@ def add_comment(request, post_id):
         comment.post = post
         comment.save()
         return redirect('blog:post_detail', post_id=post_id)
-    return render(request, 'blog/comment.html', {'form': form, 'post': post})
+    return render(request, 'blog/comment.html', {
+        'form': form,
+        'post': post
+    })
 
 
 @login_required
@@ -142,7 +158,10 @@ def edit_comment(request, post_id, comment_id):
     if form.is_valid():
         form.save()
         return redirect('blog:post_detail', post_id=post_id)
-    return render(request, 'blog/comment.html', {'form': form, 'comment': comment})
+    return render(request, 'blog/comment.html', {
+        'form': form,
+        'comment': comment
+    })
 
 
 @login_required
@@ -154,4 +173,3 @@ def delete_comment(request, post_id, comment_id):
         comment.delete()
         return redirect('blog:post_detail', post_id=post_id)
     return render(request, 'blog/comment.html', {'comment': comment})
-    

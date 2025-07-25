@@ -97,7 +97,7 @@ class Post(PublishedCreatedAbstract):
         blank=True,
         verbose_name='Изображение'
     )
-    
+
     @property
     def comment_count(self):
         return self.comments.filter(active=True).count()
@@ -109,6 +109,7 @@ class Post(PublishedCreatedAbstract):
 
     def __str__(self):
         return self.title[:STR_TRUNCATE_LENGTH]
+
 
 class Comment(models.Model):
     text = models.TextField(verbose_name='Текст комментария')

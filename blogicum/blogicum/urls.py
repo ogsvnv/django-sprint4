@@ -1,12 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
-#from django.views.decorators.csrf import csrf_failure
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from blog import views as blog_views
 from django.urls import path
 from django.contrib.auth.views import (
     LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView,
@@ -15,8 +10,6 @@ from django.contrib.auth.views import (
 )
 from django.conf import settings
 from django.conf.urls.static import static
-from pages.views import custom_server_error
-
 
 handler500 = 'pages.views.custom_server_error'
 handler404 = 'pages.views.page_not_found'
@@ -63,4 +56,7 @@ urlpatterns = [
     ), name='password_reset_complete'),]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )
