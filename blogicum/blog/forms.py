@@ -8,8 +8,10 @@ from .models import Comment, Post
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ('title', 'text', 'image', 'category', 'location', 'is_published',
-                  'pub_date')
+        fields = (
+            'title', 'text', 'image', 'category',
+            'location', 'is_published', 'pub_date'
+        )
 
 
 class UserForm(UserChangeForm):
