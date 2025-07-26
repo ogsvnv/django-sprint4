@@ -4,4 +4,4 @@ from django.apps import AppConfig
 class BlogConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'blog'
-    verbose_name = 'Блог'  # требуется для test_blog_in_rus.pytest
+    verbose_name = 'Блог'

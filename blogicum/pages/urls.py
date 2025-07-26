@@ -1,4 +1,5 @@
-from django.urls import path
+﻿from django.urls import path
+
 from pages.views import AboutView, RulesView
 
 app_name = 'pages'

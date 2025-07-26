@@ -23,8 +23,6 @@ INSTALLED_APPS = [
 
 APP_NAME = 'Блог'
 
-LOGIN_URL = '/auth/login/'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -58,8 +56,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'blogicum.wsgi.application'
 
-ROOT_URLCONF = 'blogicum.urls'
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -90,15 +86,20 @@ USE_I18N = False
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
+
+LOGIN_URL = '/auth/login/'
+
+CSRF_FAILURE_VIEW = 'pages.views.csrf_failure'
