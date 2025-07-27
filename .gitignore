@@ -149,4 +149,6 @@ dmypy.json
 media/
 
 sent_emails/
-
+static/
+pytest_output.txt
+db.json

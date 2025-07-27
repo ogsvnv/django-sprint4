@@ -1,6 +1,7 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
-from .models import Category, Location, Post
+from .models import Category, Location, Post, Comment
 
 
 @admin.register(Category)
@@ -52,7 +53,7 @@ class LocationAdmin(admin.ModelAdmin):
 class PostAdmin(admin.ModelAdmin):
     list_display = (
         'title', 'pub_date', 'author', 'category',
-        'location', 'is_published', 'created_at'
+        'location', 'is_published', 'created_at', 'get_image'
     )
     list_filter = ('is_published', 'category', 'location', 'author')
     search_fields = ('title', 'text')
@@ -69,6 +70,7 @@ class PostAdmin(admin.ModelAdmin):
                     'category',
                     'location',
                     'is_published',
+                    'image',
                 ),
             },
         ),
@@ -85,11 +87,42 @@ class PostAdmin(admin.ModelAdmin):
                     'category',
                     'location',
                     'is_published',
+                    'image',
                 ),
                 'description': (
                     'Если установить дату и время в будущем — '
                     'можно делать отложенные публикации. '
                     'Снимите галочку "Опубликовано", чтобы скрыть публикацию.'
                 ),
+            }),
+        ]
+
+    def get_image(self, obj):
+        return (
+            mark_safe(
+                f'<img src={obj.image.url} width="80" height="60">'
+            ) if obj.image else ''
+        )
+
+    get_image.short_description = 'Изображение'
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('author', 'post', 'created_at')
+    list_filter = ('author', 'post', 'created_at')
+    search_fields = ('text',)
+    date_hierarchy = 'created_at'
+    fieldsets = (
+        (None, {
+            'fields': ('text', 'post', 'author'),
+        }),
+    )
+
+    def get_fieldsets(self, request, obj=None):
+        return [
+            (None, {
+                'fields': ('text', 'post', 'author'),
+                'description': 'Комментарий к публикации.',
             }),
         ]
