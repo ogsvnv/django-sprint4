@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse
 from django.shortcuts import redirect
 
-from .forms import PostEditForm, CommentEditForm
+from .forms import PostEditForm
 from .models import Post, Comment
 
 
@@ -13,12 +13,14 @@ class AuthorRequiredMixin(UserPassesTestMixin):
 
 class PostMixin(AuthorRequiredMixin, LoginRequiredMixin):
     model = Post
-    form_class = PostEditForm
     template_name = 'blog/create.html'
     pk_url_kwarg = 'post_id'
 
     def handle_no_permission(self):
-        return redirect('blog:post_detail', post_id=self.kwargs['post_id'])
+        return redirect(
+            'blog:post_detail',
+            post_id=self.kwargs[self.pk_url_kwarg]
+        )
 
     def get_success_url(self):
         return reverse(
@@ -28,13 +30,12 @@ class PostMixin(AuthorRequiredMixin, LoginRequiredMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = self.form_class(instance=self.get_object())
+        context['form'] = PostEditForm(instance=self.get_object())
         return context
 
 
 class CommentMixin(LoginRequiredMixin):
     model = Comment
-    form_class = CommentEditForm
     template_name = 'blog/comment.html'
     pk_url_kwarg = 'comment_id'
 

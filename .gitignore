@@ -147,7 +147,6 @@ dmypy.json
 
 # папки со статикой и медиа
 media/
-
 sent_emails/
 static/
 pytest_output.txt

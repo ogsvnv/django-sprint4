@@ -8,17 +8,18 @@
   </form>
 {% endif %}
 <br>
-{% for comment in comments %}
+{% for comment in page_obj %}
   <div class="media mb-4">
     <div class="media-body">
-      <h5 class="mt-0">
-        <a href="{% url 'blog:profile' comment.author.username %}" name="comment_{{ comment.id }}">
-          @{{ comment.author.username }}
-        </a>
+      <h5 class="mt-0">        
+          @{{ comment.author.username }}        
       </h5>
-      <small class="text-muted">{{ comment.created_at }}</small>
-      <br>
-      {{ comment.text|linebreaksbr }}
+      <p class="card-text text-muted">
+        {{ comment.created_at }}
+      </p>
+      <p class="card-text">
+        {{ comment.text|linebreaksbr }}
+      </p>
     </div>
     {% if user == comment.author %}
       <a class="btn btn-sm text-muted" href="{% url 'blog:edit_comment' post.id comment.id %}" role="button">
@@ -30,3 +31,8 @@
     {% endif %}
   </div>
 {% endfor %}
+
+{% include 'includes/paginator.html' %}
+{% if not page_obj %}
+  <p>Комментариев пока нет.</p>
+{% endif %}
