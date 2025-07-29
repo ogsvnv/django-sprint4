@@ -76,9 +76,9 @@ class UserPostsView(PostListView):
         return get_object_or_404(User, username=self.kwargs['username'])
 
     def get_queryset(self):
-        self.author = self.get_author()
-        queryset = annotate_posts_with_comment_count(self.author.posts.all())
-        if self.author != self.request.user:
+        author = self.get_author()
+        queryset = annotate_posts_with_comment_count(author.posts.all())
+        if author != self.request.user:
             queryset = filter_published_posts(queryset)
         return queryset
 
@@ -96,11 +96,13 @@ class PostDetailView(ListView):
 
     def get_object(self):
         post = get_object_or_404(Post, pk=self.kwargs[self.pk_url_kwarg])
-        if self.request.user != post.author:
-            post = get_object_or_404(
-                Post, pk=self.kwargs[self.pk_url_kwarg], is_published=True
+        if self.request.user == post.author:
+            return post
+        return get_object_or_404(
+            filter_published_posts(
+                Post.objects.filter(pk=self.kwargs[self.pk_url_kwarg])
             )
-        return post
+        )
 
     def get_queryset(self):
         post = self.get_object()
