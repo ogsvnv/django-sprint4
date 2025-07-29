@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
@@ -78,8 +77,7 @@ class UserPostsView(PostListView):
 
     def get_queryset(self):
         self.author = self.get_author()
-        queryset = self.author.posts.all()
-        queryset = annotate_posts_with_comment_count(queryset)
+        queryset = annotate_posts_with_comment_count(self.author.posts.all())
         if self.author != self.request.user:
             queryset = filter_published_posts(queryset)
         return queryset
@@ -98,13 +96,10 @@ class PostDetailView(ListView):
 
     def get_object(self):
         post = get_object_or_404(Post, pk=self.kwargs[self.pk_url_kwarg])
-        if self.request.user == post.author:
-            return post
-        post = filter_published_posts(
-            Post.objects.filter(pk=self.kwargs[self.pk_url_kwarg])
-        ).first()
-        if not post:
-            raise Http404("Post not found")
+        if self.request.user != post.author:
+            post = get_object_or_404(
+                Post, pk=self.kwargs[self.pk_url_kwarg], is_published=True
+            )
         return post
 
     def get_queryset(self):

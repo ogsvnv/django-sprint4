@@ -97,14 +97,13 @@ class PostAdmin(admin.ModelAdmin):
             }),
         ]
 
+    @admin.display(description='Изображение')
     def get_image(self, obj):
         return (
             mark_safe(
                 f'<img src={obj.image.url} width="80" height="60">'
             ) if obj.image else ''
         )
-
-    get_image.short_description = 'Изображение'
 
 
 @admin.register(Comment)
